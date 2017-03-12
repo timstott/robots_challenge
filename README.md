@@ -58,3 +58,26 @@ LLFFFLFLFL
 1 1 E
 3 3 N LOST
 2 3 S
+
+# The Solution
+
+## Requirements
+- Elixir >= 1.4.1
+
+## Installation
+```
+git clone git@github.com:timstott/robots_challenge.git
+cd robots_challenge
+```
+
+## Usage
+The solution can be run inside the Elixir interactive shell
+```
+iex -S mix
+Simulation.main
+```
+
+## Tests
+```
+mix tests
+```
