@@ -1,26 +1,16 @@
-defmodule Robots do
-  @moduledoc """
-  Documentation for Robots.
-  """
-
-  def run(world) do
-    world = Map.put(world, :results, [])
-    Enum.reduce(world.missions, world, fn(mission, world) ->
-      robot = actionate(mission.actions, mission.robot, world)
-      %{world | results: (world.results ++ [robot])}
-    end).results
-  end
+defmodule Robot do
+  defstruct [:position, :bearing, :lost]
 
   @doc """
   Applies sequence of actions to a robot.
   """
-  def actionate(actions, robot, world) do
+  def actionate(actions, robot, %Simulation{grid: grid, results: results}) do
     Enum.reduce_while(actions, robot, fn(action, robot) ->
       new_robot = move(robot, action)
 
-      new_robot_lost? = Robots.lost?(new_robot.position, world.size)
+      new_robot_lost? = Robot.is_lost?(new_robot, grid)
       cond do
-        new_robot_lost? && Robots.any_lost?(robot, world.results) ->
+        new_robot_lost? && Robot.any_lost?(robot, results) ->
           {:cont, robot}
         new_robot_lost? ->
           {:halt, Map.put(robot, :lost, true)}
@@ -33,15 +23,15 @@ defmodule Robots do
   @doc """
   Returns true when the robot position is outside the grid
   """
-  def lost?({x_robot, y_robot}, {x_grid, y_grid}) do
+  def is_lost?(%Robot{position: {x_robot, y_robot}}, {x_grid, y_grid}) do
     x_robot > x_grid || y_robot > y_grid
   end
 
   @doc """
   Retruns true when robots have been lost at the robot location
   """
-  def any_lost?(%{position: robot_position}, robots) do
-    Enum.any?(robots, fn(%{position: was_position , lost: was_lost}) ->
+  def any_lost?(%Robot{position: robot_position}, robots) do
+    Enum.any?(robots, fn(%{position: was_position, lost: was_lost}) ->
       was_lost && robot_position == was_position
     end)
   end

@@ -28,4 +28,11 @@ defmodule Simulation do
     end)
     simulation
   end
+
+  def run(%Simulation{missions: missions} = simulation) do
+    Enum.reduce(missions, simulation, fn(mission, simulation) ->
+      robot = Robot.actionate(mission.actions, mission.robot, simulation)
+      %{simulation | results: (simulation.results ++ [robot])}
+    end).results
+  end
 end
