@@ -5,6 +5,21 @@ defmodule Simulation do
   @max_actions 100
   @valid_actions MapSet.new([:F, :L, :R])
 
+  def main do
+    simulation = %Simulation{
+      grid: {5, 3},
+      missions: [
+        %{robot: %Robot{position: {1, 1}, bearing: :E}, actions: [:R, :F, :R, :F, :R, :F, :R, :F]},
+        %{robot: %Robot{position: {3, 2}, bearing: :N}, actions: [:F, :R, :R, :F, :L, :L, :F, :F, :R, :R,:F, :L, :L]},
+        %{robot: %Robot{position: {0, 3}, bearing: :W}, actions: [:L, :L, :F, :F, :F, :L, :F, :L, :F, :L]}
+      ]
+    }
+
+    simulation
+    |> validate!
+    |> run
+  end
+
   @doc """
   Returns the simulation when valid.
   Or raises an exception when the simulation is invalid.
